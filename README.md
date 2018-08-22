@@ -135,8 +135,8 @@ apiVersion: ctl.isla.solutions/v1
 kind: CloudEndpoint
 metadata:
   name: service1
-spec: |-
-  openAPISpec:
+spec:
+  openAPISpec: |-
     swagger: "2.0"
     info:
       description: "wildcard config for any HTTP service."

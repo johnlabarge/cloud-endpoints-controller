@@ -12,7 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-apiVersion: v1
-description: Metacontroller for Kubernetes Custom Resource Definitions
-name: metacontroller
-version: 0.1.0
+# Default values for cloud-endpoints-controller.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+replicaCount: 1
+
+cloudSA:
+  enabled: false
+  secretName:
+  secretKey:
+
+image:
+  repository: gcr.io/cloud-solutions-group/cloud-endpoints-controller
+  tag: 0.2.1
+  pullPolicy: IfNotPresent

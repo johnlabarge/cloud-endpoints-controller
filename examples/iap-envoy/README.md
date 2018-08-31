@@ -1,12 +1,12 @@
 # Cloud Endpoints and IAP Example with Envoy
 
-[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/danisla/cloud-endpoints-controller&page=editor&tutorial=examples/iap-esp/README.md)
+[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/cloud-endpoints-operator&page=editor&tutorial=examples/iap-esp/README.md)
 
 This example shows how to use the Cloud Endpoints Controller with IAP and an L7 Ingress Load Balancer.
 
 **Figure 1.** *diagram of Google Cloud resources*
 
-![architecture diagram](https://raw.githubusercontent.com/danisla/cloud-endpoints-controller/master/examples/iap-envoy/diagram.png)
+![architecture diagram](https://raw.githubusercontent.com/GoogleCloudPlatform/cloud-endpoints-operator/master/examples/iap-envoy/diagram.png)
 
 
 ## Task 0 - Setup environment
@@ -17,20 +17,13 @@ This example shows how to use the Cloud Endpoints Controller with IAP and an L7 
 gcloud config set project YOUR_PROJECT
 ```
 
-2. Install kubectl plugins:
-
-```
-mkdir -p ~/.kube/plugins
-git clone https://github.com/danisla/kubefunc.git ~/.kube/plugins/kubefunc
-```
-
-3. Enable the Service Management API:
+2. Enable the Service Management API:
 
 ```
 gcloud services enable servicemanagement.googleapis.com
 ```
 
-4. Create GKE cluster:
+3. Create GKE cluster:
 
 ```
 VERSION=$(gcloud container get-server-config --zone us-central1-c --format='value(validMasterVersions[0])')
@@ -47,20 +40,65 @@ gcloud container clusters create dev --zone=us-central1-c --cluster-version=${VE
 
 1. Install helm
 
-```
-kubectl plugin install-helm
+```sh
+curl -L https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
+kubectl create clusterrolebinding default-admin --clusterrole=cluster-admin --user=$(gcloud config get-value account);
+kubectl create serviceaccount tiller --namespace kube-system;
+kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller;
+helm init --service-account=tiller;
+helm repo update
+helm version
 ```
 
 2. Install Cloud Endpoints Controller
 
-```
-kubectl plugin install-cloud-endpoints-controller
+```sh
+kubectl create clusterrolebinding ${USER}-cluster-admin-binding --clusterrole=cluster-admin --user=$(gcloud config get-value account)
+
+kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/metacontroller/master/manifests/metacontroller-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/metacontroller/master/manifests/metacontroller.yaml
+
+kubectl apply -f https://raw.githubusercontent.com/danisla/cloud-endpoints-controller/master/manifests/cloud-endpoints-controller-rbac.yaml
+kubectl apply -f https://raw.githubusercontent.com/danisla/cloud-endpoints-controller/master/manifests/cloud-endpoints-controller.yaml
 ```
 
 3. Install cert-manager and ACME ClusterIssuers 
 
-```
-kubectl plugin install-cert-manager
+```sh
+  helm install --name cert-manager --namespace kube-system stable/cert-manager
+  EMAIL=$(gcloud config get-value account)
+
+  cat <<EOF | kubectl apply -f -
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+  namespace: kube-system
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: ${EMAIL}
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    # Enable the HTTP-01 challenge provider
+    http01: {}
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+  namespace: kube-system
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: ${EMAIL}
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-production
+    # Enable the HTTP-01 challenge provider
+    http01: {}
+EOF
 ```
 
 ## Task 2 - Deploy Sample App

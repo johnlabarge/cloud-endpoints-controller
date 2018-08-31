@@ -13,6 +13,7 @@
 # limitations under the License.
 #
 apiVersion: v1
-description: Metacontroller for Kubernetes Custom Resource Definitions
-name: metacontroller
-version: 0.1.0
+description: Custom Resource Definition and Lambda meta controller for for automated Cloud Endpoionts service management. 
+name: cloud-endpoints-controller
+version: 0.1.1
+appVersion: 0.1.1

@@ -10,15 +10,15 @@ This project uses the following build tools:
 1. Clone the repository into your `GOPATH`:
 
 ```
-mkdir -p ${GOPATH}/src/github.com/danisla/
-cd ${GOPATH}/src/github.com/danisla/
-git clone https://github.com/danisla/cloud-endpoints-controller.git
+mkdir -p ${GOPATH}/src/github.com/GoogleCloudPlatform/
+cd ${GOPATH}/src/github.com/GoogleCloudPlatform/
+git clone https://github.com/GoogleCloudPlatform/cloud-endpoints-operator.git
 ```
 
 Add your fork as another git remote:
 
 ```
-FORK_URI=git@github.com:YOUR_GITHUB_USER/cloud-endpoints-controller.git
+FORK_URI=git@github.com:YOUR_GITHUB_USER/cloud-endpoints-operator.git
 git remote add fork ${FORK_URI}
 ```
 
@@ -29,7 +29,7 @@ In skaffold.yaml:
 ```
 build:
   artifacts:
-  - imageName: YOUR_REGISTRY/cloud-endpoints-controller
+  - imageName: YOUR_REGISTRY/cloud-endpoints-operator
 ```
 
 > Replace `YOUR_REGISTRY` with something you can push to. 
@@ -41,8 +41,8 @@ spec:
   template:
     spec:
       containers:
-      - name: cloud-endpoints-controller
-        image: YOUR_REGISTRY/cloud-endpoints-controller
+      - name: cloud-endpoints-operator
+        image: YOUR_REGISTRY/cloud-endpoints-operator
 ```
 
 > Replace `YOUR_REGISTRY` with something you can push to.

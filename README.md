@@ -58,7 +58,7 @@ helm install --name cloud-endpoints-controller --namespace=metacontroller charts
 
 ## IAP Ingress Tutorial
 
-[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/danisla/cloud-endpoints-controller&page=shell&tutorial=examples/iap-esp/README.md)
+[![button](http://gstatic.com/cloudssh/images/open-btn.png)](https://console.cloud.google.com/cloudshell/open?git_repo=https://github.com/GoogleCloudPlatform/cloud-endpoints-operator&page=shell&tutorial=examples/iap-esp/README.md)
 
 Tutorial showing how to use the Cloud Endpoints Controller with the Identity Aware Proxy on Google Kubernetes Engine.
 
@@ -71,7 +71,7 @@ PROJECT=$(gcloud config get-value project)
 IP_ADDRESS=1.2.3.4
 
 cat > target-ip-cloudep.yaml <<EOF
-apiVersion: ctl.isla.solutions/v1
+apiVersion: extensions.gcp.solutions/v1
 kind: CloudEndpoint
 metadata:
   name: target-ip
@@ -100,7 +100,7 @@ PROJECT=$(gcloud config get-value project)
 INGRESS_NAME=nginx-ingress
 
 cat > ingress-cloudep.yaml <<EOF
-apiVersion: ctl.isla.solutions/v1
+apiVersion: extensions.gcp.solutions/v1
 kind: CloudEndpoint
 metadata:
   name: ingress
@@ -131,7 +131,7 @@ PROJECT=$(gcloud config get-value project)
 TARGET_IP=1.2.3.4
 
 cat > service1-cloudep.yaml <<EOF
-apiVersion: ctl.isla.solutions/v1
+apiVersion: extensions.gcp.solutions/v1
 kind: CloudEndpoint
 metadata:
   name: service1
@@ -233,7 +233,7 @@ spec:
           serviceName: service4
           servicePort: 80
 --- 
-apiVersion: ctl.isla.solutions/v1
+apiVersion: extensions.gcp.solutions/v1
 kind: CloudEndpoint
 metadata:
   name: service4
@@ -411,7 +411,7 @@ spec:
           serviceName: service5
           servicePort: 80
 ---
-apiVersion: ctl.isla.solutions/v1
+apiVersion: extensions.gcp.solutions/v1
 kind: CloudEndpoint
 metadata:
   name: service5
